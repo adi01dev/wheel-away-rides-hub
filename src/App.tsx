@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import BecomeHost from "./pages/BecomeHost";
 import HostDashboard from "./pages/HostDashboard";
 import BookingConfirmation from "./pages/BookingConfirmation";
+import RideSharing from "./pages/RideSharing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/become-host" element={<BecomeHost />} />
             <Route path="/host-dashboard" element={<HostDashboard />} />
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+            <Route path="/ride-sharing" element={<RideSharing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Route>

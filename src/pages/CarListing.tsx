@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import CarRecommendation from "@/components/cars/CarRecommendation";
 
 // Mock data for car listings
 const carsData = [
@@ -35,7 +36,7 @@ const carsData = [
     image: "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?q=80&w=1470&auto=format&fit=crop",
     price: 105,
     location: "Los Angeles",
-    category: "Luxury",
+    category: "Midsize",
     rating: 4.7,
     features: ["Leather Seats", "Sunroof", "Navigation"],
     seats: 5,
@@ -152,6 +153,11 @@ const CarListing = () => {
     setFilteredCars(filtered);
   }, [searchLocation, priceRange, carType, transmission]);
 
+  // Handle car type recommendation selection
+  const handleRecommendation = (category: string) => {
+    setCarType(category);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-6">
@@ -201,6 +207,9 @@ const CarListing = () => {
                       <SelectItem value="Electric">Electric</SelectItem>
                       <SelectItem value="Sports">Sports</SelectItem>
                       <SelectItem value="Economy">Economy</SelectItem>
+                      <SelectItem value="Compact">Compact</SelectItem>
+                      <SelectItem value="Midsize">Midsize</SelectItem>
+                      <SelectItem value="Van">Van</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -338,6 +347,9 @@ const CarListing = () => {
                       <SelectItem value="Electric">Electric</SelectItem>
                       <SelectItem value="Sports">Sports</SelectItem>
                       <SelectItem value="Economy">Economy</SelectItem>
+                      <SelectItem value="Compact">Compact</SelectItem>
+                      <SelectItem value="Midsize">Midsize</SelectItem>
+                      <SelectItem value="Van">Van</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -362,6 +374,9 @@ const CarListing = () => {
         
         {/* Car listings */}
         <div className="flex-1">
+          {/* Car recommendation system */}
+          <CarRecommendation onRecommendationComplete={handleRecommendation} />
+          
           <div className="mb-6 flex justify-between items-center">
             <h1 className="text-2xl font-bold">
               {filteredCars.length} cars available

@@ -3,17 +3,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Calendar } from "lucide-react";
+import { Search, Calendar, Car, Users } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const HeroBanner = () => {
   const navigate = useNavigate();
   const [location, setLocation] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [activeTab, setActiveTab] = useState("self-drive");
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -21,7 +23,11 @@ const HeroBanner = () => {
     if (startDate) params.append("from", format(startDate, "yyyy-MM-dd"));
     if (endDate) params.append("to", format(endDate, "yyyy-MM-dd"));
     
-    navigate(`/cars?${params.toString()}`);
+    if (activeTab === "self-drive") {
+      navigate(`/cars?${params.toString()}`);
+    } else {
+      navigate(`/ride-sharing?${params.toString()}`);
+    }
   };
 
   return (
@@ -38,10 +44,23 @@ const HeroBanner = () => {
         <div className="max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">Find the Perfect Car for Your Next Adventure</h1>
           <p className="text-xl text-gray-200 mb-8">
-            Rent unique cars from local hosts around the world
+            Rent unique cars from local hosts or share rides around the world
           </p>
           
           <div className="bg-white p-6 rounded-xl shadow-lg">
+            <Tabs defaultValue="self-drive" className="mb-6" onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="self-drive" className="flex items-center gap-2">
+                  <Car className="h-4 w-4" />
+                  Self Drive
+                </TabsTrigger>
+                <TabsTrigger value="ride-sharing" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Ride Sharing
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
@@ -119,7 +138,7 @@ const HeroBanner = () => {
                 className="w-full bg-wheelteal-600 hover:bg-wheelteal-700 text-white"
                 size="lg"
               >
-                Search Cars
+                {activeTab === "self-drive" ? "Search Cars" : "Find Rides"}
               </Button>
             </div>
           </div>
