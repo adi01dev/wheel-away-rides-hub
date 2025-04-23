@@ -201,7 +201,7 @@ const CarListing = () => {
                       <SelectValue placeholder="All types" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All types</SelectItem>
+                      <SelectItem value="all">All types</SelectItem>
                       <SelectItem value="Luxury">Luxury</SelectItem>
                       <SelectItem value="SUV">SUV</SelectItem>
                       <SelectItem value="Electric">Electric</SelectItem>
@@ -221,7 +221,7 @@ const CarListing = () => {
                       <SelectValue placeholder="Any transmission" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any transmission</SelectItem>
+                      <SelectItem value="any">Any transmission</SelectItem>
                       <SelectItem value="Automatic">Automatic</SelectItem>
                       <SelectItem value="Manual">Manual</SelectItem>
                     </SelectContent>
@@ -341,7 +341,7 @@ const CarListing = () => {
                       <SelectValue placeholder="All types" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All types</SelectItem>
+                      <SelectItem value="all">All types</SelectItem>
                       <SelectItem value="Luxury">Luxury</SelectItem>
                       <SelectItem value="SUV">SUV</SelectItem>
                       <SelectItem value="Electric">Electric</SelectItem>
@@ -361,7 +361,7 @@ const CarListing = () => {
                       <SelectValue placeholder="Any transmission" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any transmission</SelectItem>
+                      <SelectItem value="any">Any transmission</SelectItem>
                       <SelectItem value="Automatic">Automatic</SelectItem>
                       <SelectItem value="Manual">Manual</SelectItem>
                     </SelectContent>
