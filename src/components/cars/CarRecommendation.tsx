@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Car, Users, Navigation } from "lucide-react";
+import { Car, Users, Navigation, Calendar } from "lucide-react";
 import { toast } from "sonner";
 
 // Define the car recommendation questions and options
