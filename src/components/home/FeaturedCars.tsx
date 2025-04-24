@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -79,7 +78,7 @@ const FeaturedCars = () => {
                   <div className="text-sm text-gray-500 mb-3">{car.location}</div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <span className="font-bold text-lg">${car.price}</span>
+                      <span className="font-bold text-lg">₹{car.price}</span>
                       <span className="text-gray-500 text-sm"> / day</span>
                     </div>
                   </div>

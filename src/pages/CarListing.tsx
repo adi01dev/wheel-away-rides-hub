@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,6 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CarRecommendation from "@/components/cars/CarRecommendation";
 
-// Mock data for car listings
 const carsData = [
   {
     id: 1,
@@ -130,7 +128,6 @@ const CarListing = () => {
   useEffect(() => {
     let filtered = [...carsData];
 
-    // Apply filters
     if (searchLocation) {
       filtered = filtered.filter(car => 
         car.location.toLowerCase().includes(searchLocation.toLowerCase())
@@ -145,7 +142,6 @@ const CarListing = () => {
       filtered = filtered.filter(car => car.transmission === transmission);
     }
 
-    // Apply price filter
     filtered = filtered.filter(car => 
       car.price >= priceRange[0] && car.price <= priceRange[1]
     );
@@ -153,7 +149,6 @@ const CarListing = () => {
     setFilteredCars(filtered);
   }, [searchLocation, priceRange, carType, transmission]);
 
-  // Handle car type recommendation selection
   const handleRecommendation = (category: string) => {
     setCarType(category);
   };
@@ -161,7 +156,6 @@ const CarListing = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Mobile filter button */}
         <div className="md:hidden mb-4">
           <Dialog open={isMobilFilterOpen} onOpenChange={setMobileFilterOpen}>
             <DialogTrigger asChild>
@@ -174,7 +168,6 @@ const CarListing = () => {
               <DialogHeader>
                 <DialogTitle>Filters</DialogTitle>
               </DialogHeader>
-              {/* Mobile filters */}
               <div className="mt-4 space-y-6">
                 <div className="space-y-2">
                   <h3 className="font-medium">Price Range</h3>
@@ -188,8 +181,8 @@ const CarListing = () => {
                       className="my-6"
                     />
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <div>${priceRange[0]}</div>
-                      <div>${priceRange[1]}</div>
+                      <div>₹{priceRange[0]}</div>
+                      <div>₹{priceRange[1]}</div>
                     </div>
                   </div>
                 </div>
@@ -241,7 +234,6 @@ const CarListing = () => {
           </Dialog>
         </div>
         
-        {/* Desktop filters */}
         <div className="hidden md:block w-64 space-y-6">
           <Card>
             <CardContent className="p-6">
@@ -328,8 +320,8 @@ const CarListing = () => {
                       className="my-6"
                     />
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <div>${priceRange[0]}</div>
-                      <div>${priceRange[1]}</div>
+                      <div>₹{priceRange[0]}</div>
+                      <div>₹{priceRange[1]}</div>
                     </div>
                   </div>
                 </div>
@@ -372,9 +364,7 @@ const CarListing = () => {
           </Card>
         </div>
         
-        {/* Car listings */}
         <div className="flex-1">
-          {/* Car recommendation system */}
           <CarRecommendation onRecommendationComplete={handleRecommendation} />
           
           <div className="mb-6 flex justify-between items-center">
@@ -436,7 +426,7 @@ const CarListing = () => {
                       </div>
                       <div className="flex justify-between items-center">
                         <div>
-                          <span className="font-bold text-lg">${car.price}</span>
+                          <span className="font-bold text-lg">₹{car.price}</span>
                           <span className="text-gray-500 text-sm"> / day</span>
                         </div>
                       </div>

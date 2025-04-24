@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ import { Calendar as CalendarIcon, Car, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
-// Mock data for car detail
 const carData = {
   id: 1,
   name: "Tesla Model 3",
@@ -106,22 +104,18 @@ const CarDetail = () => {
       return;
     }
     
-    // In a real app, this would submit the booking to an API
     toast({
       title: "Booking successful!",
       description: `You've booked the ${carData.name} from ${format(startDate, "MMM dd, yyyy")} to ${format(endDate, "MMM dd, yyyy")}.`,
     });
     
-    // Navigate to a confirmation page
     navigate("/booking-confirmation");
   };
   
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left column - Car details */}
         <div className="lg:w-2/3">
-          {/* Car image gallery */}
           <div className="mb-6">
             <div className="relative aspect-[16/9] rounded-lg overflow-hidden mb-4">
               <img 
@@ -147,7 +141,6 @@ const CarDetail = () => {
             </div>
           </div>
           
-          {/* Car info */}
           <div className="mb-8">
             <div className="flex justify-between items-start mb-2">
               <h1 className="text-3xl font-bold">{carData.name}</h1>
@@ -227,7 +220,6 @@ const CarDetail = () => {
             </Tabs>
           </div>
           
-          {/* Host info */}
           <div className="border-t pt-8">
             <h2 className="text-xl font-semibold mb-4">Meet Your Host</h2>
             <div className="flex items-center gap-4">
@@ -248,14 +240,13 @@ const CarDetail = () => {
           </div>
         </div>
         
-        {/* Right column - Booking widget */}
         <div className="lg:w-1/3">
           <div className="sticky top-24">
             <Card>
               <CardContent className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <span className="font-bold text-2xl">${carData.price}</span>
+                    <span className="font-bold text-2xl">₹{carData.price}</span>
                     <span className="text-gray-500"> / day</span>
                   </div>
                   <div className="flex items-center">
@@ -328,17 +319,17 @@ const CarDetail = () => {
                   <div className="mt-6 border-t pt-4 space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">
-                        ${carData.price} x {Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))} days
+                        ₹{carData.price} x {Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))} days
                       </span>
-                      <span>${calculateTotal()}</span>
+                      <span>₹{calculateTotal()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service fee</span>
-                      <span>${Math.round(calculateTotal() * 0.1)}</span>
+                      <span>₹{Math.round(calculateTotal() * 0.1)}</span>
                     </div>
                     <div className="flex justify-between font-bold border-t pt-3 mt-3">
                       <span>Total</span>
-                      <span>${calculateTotal() + Math.round(calculateTotal() * 0.1)}</span>
+                      <span>₹{calculateTotal() + Math.round(calculateTotal() * 0.1)}</span>
                     </div>
                   </div>
                 )}

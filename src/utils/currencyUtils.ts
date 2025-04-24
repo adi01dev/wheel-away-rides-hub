@@ -1,4 +1,3 @@
-
 /**
  * Format currency for display throughout the application
  * @param amount - The numerical amount to format
