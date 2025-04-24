@@ -8,6 +8,7 @@ const carRoutes = require('./routes/cars');
 const bookingRoutes = require('./routes/bookings');
 const rideShareRoutes = require('./routes/rideShare');
 const path = require('path');
+const fs = require('fs');
 
 // Load environment variables
 dotenv.config();
@@ -18,6 +19,24 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Create upload directories if they don't exist
+const uploadDirs = [
+  'uploads',
+  'uploads/profile',
+  'uploads/cars',
+  'uploads/documents',
+  'uploads/cardocs'
+];
+
+uploadDirs.forEach(dir => {
+  const dirPath = path.join(__dirname, dir);
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+    console.log(`Created directory: ${dirPath}`);
+  }
+});
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB

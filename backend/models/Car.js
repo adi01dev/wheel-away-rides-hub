@@ -50,9 +50,32 @@ const CarSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  documents: [{
-    type: String
-  }],
+  documents: {
+    registrationCertificate: {
+      file: String,
+      verified: {
+        type: Boolean,
+        default: false
+      },
+      verificationDate: Date
+    },
+    insurance: {
+      file: String,
+      verified: {
+        type: Boolean,
+        default: false
+      },
+      verificationDate: Date
+    },
+    pucCertificate: {
+      file: String,
+      verified: {
+        type: Boolean,
+        default: false
+      },
+      verificationDate: Date
+    }
+  },
   isVerified: {
     type: Boolean,
     default: false

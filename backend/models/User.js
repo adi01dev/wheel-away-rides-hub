@@ -28,8 +28,27 @@ const UserSchema = new mongoose.Schema({
   profileImage: {
     type: String
   },
-  drivingLicense: {
-    type: String
+  documents: {
+    drivingLicense: {
+      file: String,
+      verified: {
+        type: Boolean,
+        default: false
+      },
+      verificationDate: Date
+    },
+    identityProof: {
+      file: String,
+      verified: {
+        type: Boolean,
+        default: false
+      },
+      verificationDate: Date
+    }
+  },
+  digilockerVerified: {
+    type: Boolean,
+    default: false
   },
   createdAt: {
     type: Date,

@@ -4,10 +4,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Car, DollarSign, Calendar, Users, ChevronRight, PlusCircle } from "lucide-react";
+import { Car, DollarSign, Calendar, Users, ChevronRight, PlusCircle, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import HostDocumentVerification from "@/components/host/HostDocumentVerification";
+import CarDocumentVerification from "@/components/cars/CarDocumentVerification";
+import { useToast } from "@/hooks/use-toast";
 
-// Mock data for host dashboard
 const hostData = {
   name: "Michael S.",
   carsListed: 2,
@@ -17,6 +19,17 @@ const hostData = {
   thisMonth: {
     earnings: 845.25,
     trips: 6
+  },
+  documents: {
+    drivingLicense: {
+      file: "https://images.unsplash.com/photo-1586769852044-692d6e3703f0?q=80&w=1374&auto=format&fit=crop",
+      verified: true,
+      verificationDate: "2023-10-15"
+    },
+    identityProof: {
+      file: null,
+      verified: false
+    }
   }
 };
 
@@ -28,7 +41,23 @@ const carListings = [
     price: 89,
     trips: 17,
     rating: 4.9,
-    status: "active"
+    status: "active",
+    documents: {
+      registrationCertificate: {
+        file: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1364&auto=format&fit=crop",
+        verified: true,
+        verificationDate: "2023-09-22"
+      },
+      insurance: {
+        file: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=1364&auto=format&fit=crop",
+        verified: true,
+        verificationDate: "2023-09-22"
+      },
+      pucCertificate: {
+        file: null,
+        verified: false
+      }
+    }
   },
   {
     id: 2,
@@ -37,7 +66,24 @@ const carListings = [
     price: 115,
     trips: 10,
     rating: 4.8,
-    status: "active"
+    status: "active",
+    documents: {
+      registrationCertificate: {
+        file: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1364&auto=format&fit=crop",
+        verified: true,
+        verificationDate: "2023-08-15"
+      },
+      insurance: {
+        file: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=1364&auto=format&fit=crop",
+        verified: true,
+        verificationDate: "2023-08-15"
+      },
+      pucCertificate: {
+        file: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=1364&auto=format&fit=crop",
+        verified: true,
+        verificationDate: "2023-08-16"
+      }
+    }
   }
 ];
 
@@ -86,11 +132,55 @@ const bookings = [
 
 const HostDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [selectedCar, setSelectedCar] = useState<number | null>(null);
+  const { toast } = useToast();
+  
+  const handleUploadDocument = async (documentType: string, file: File) => {
+    console.log(`Uploading ${documentType} document:`, file);
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          file: URL.createObjectURL(file)
+        });
+      }, 1500);
+    });
+  };
+  
+  const handleVerifyDocument = async (documentType: string) => {
+    console.log(`Verifying ${documentType} document`);
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const digilockerWindow = window.open(
+          "https://digilocker.gov.in", 
+          "DigiLocker Authentication",
+          "width=600,height=600"
+        );
+        
+        setTimeout(() => {
+          if (digilockerWindow) {
+            digilockerWindow.close();
+          }
+          toast({
+            title: "Verification Successful",
+            description: "Your document has been verified through DigiLocker."
+          });
+          resolve({ success: true });
+        }, 3000);
+      }, 1000);
+    });
+  };
+  
+  const handleVerifyCarDocument = async (documentType: string) => {
+    console.log(`Verifying car ${documentType} document`);
+    return handleVerifyDocument(documentType);
+  };
   
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar */}
         <div className="w-full md:w-64 shrink-0">
           <div className="sticky top-24 space-y-6">
             <div className="flex items-center gap-3 mb-8">
@@ -126,6 +216,14 @@ const HostDashboard = () => {
                 Bookings
               </Button>
               <Button 
+                variant={activeTab === "documents" ? "default" : "ghost"} 
+                className={`w-full justify-start ${activeTab === "documents" ? "bg-wheelteal-600 hover:bg-wheelteal-700" : ""}`}
+                onClick={() => setActiveTab("documents")}
+              >
+                <Shield className="mr-2 h-4 w-4" />
+                Documents
+              </Button>
+              <Button 
                 variant={activeTab === "earnings" ? "default" : "ghost"} 
                 className={`w-full justify-start ${activeTab === "earnings" ? "bg-wheelteal-600 hover:bg-wheelteal-700" : ""}`}
                 onClick={() => setActiveTab("earnings")}
@@ -143,10 +241,8 @@ const HostDashboard = () => {
           </div>
         </div>
         
-        {/* Main content */}
         <div className="flex-1">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            {/* Dashboard tab */}
             <TabsContent value="dashboard">
               <div className="space-y-8">
                 <div className="flex items-center justify-between">
@@ -310,7 +406,6 @@ const HostDashboard = () => {
               </div>
             </TabsContent>
             
-            {/* Listings tab */}
             <TabsContent value="listings">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -378,7 +473,6 @@ const HostDashboard = () => {
               </div>
             </TabsContent>
             
-            {/* Bookings tab */}
             <TabsContent value="bookings">
               <div className="space-y-6">
                 <h1 className="text-2xl font-bold">Bookings</h1>
@@ -489,7 +583,101 @@ const HostDashboard = () => {
               </div>
             </TabsContent>
             
-            {/* Other tabs would be implemented similarly */}
+            <TabsContent value="documents">
+              <div className="space-y-6">
+                <h1 className="text-2xl font-bold">Document Verification</h1>
+                
+                <Tabs defaultValue="personal" className="space-y-6">
+                  <TabsList>
+                    <TabsTrigger value="personal">Personal Documents</TabsTrigger>
+                    <TabsTrigger value="cars">Car Documents</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="personal">
+                    <HostDocumentVerification
+                      drivingLicense={hostData.documents.drivingLicense}
+                      identityProof={hostData.documents.identityProof}
+                      onUpload={handleUploadDocument}
+                      onVerify={handleVerifyDocument}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="cars">
+                    {selectedCar !== null ? (
+                      <div>
+                        <Button 
+                          variant="outline" 
+                          className="mb-4"
+                          onClick={() => setSelectedCar(null)}
+                        >
+                          ← Back to cars
+                        </Button>
+                        
+                        <h2 className="text-xl font-semibold mb-4">{carListings[selectedCar].name} Documents</h2>
+                        
+                        <CarDocumentVerification
+                          carId={carListings[selectedCar].id.toString()}
+                          documents={carListings[selectedCar].documents}
+                          onUpload={handleUploadDocument}
+                          onVerify={handleVerifyCarDocument}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-gray-600 mb-6">
+                          Select a car to manage its documents. All cars require verified registration, 
+                          insurance, and PUC certificates.
+                        </p>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {carListings.map((car, index) => {
+                            const totalDocs = 3; // RC, Insurance, PUC
+                            const verifiedDocs = [
+                              car.documents.registrationCertificate?.verified,
+                              car.documents.insurance?.verified,
+                              car.documents.pucCertificate?.verified
+                            ].filter(Boolean).length;
+                            
+                            return (
+                              <Card key={car.id} className="cursor-pointer hover:border-wheelteal-500 transition-colors"
+                                    onClick={() => setSelectedCar(index)}>
+                                <div className="flex gap-4 p-4">
+                                  <div className="w-20 h-20 rounded overflow-hidden shrink-0">
+                                    <img 
+                                      src={car.image} 
+                                      alt={car.name} 
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="font-medium truncate">{car.name}</h3>
+                                    <div className="flex items-center justify-between mt-2">
+                                      <span className="text-sm text-gray-500">{verifiedDocs} of {totalDocs} documents verified</span>
+                                      <Badge className={verifiedDocs === totalDocs ? "bg-green-500" : "bg-amber-500"}>
+                                        {verifiedDocs === totalDocs ? "Verified" : "Incomplete"}
+                                      </Badge>
+                                    </div>
+                                    <div className="mt-2">
+                                      <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                                        <div 
+                                          className="h-full bg-wheelteal-600 rounded-full" 
+                                          style={{ width: `${(verifiedDocs/totalDocs) * 100}%` }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </Card>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </TabsContent>
+            
             <TabsContent value="earnings">
               <div className="space-y-6">
                 <h1 className="text-2xl font-bold">Earnings</h1>

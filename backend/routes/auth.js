@@ -5,12 +5,18 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
+const digilockerVerify = require('../middleware/digilockerVerify');
 const router = express.Router();
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/profile');
+    // Different folders based on document type
+    if (file.fieldname === 'drivingLicense' || file.fieldname === 'identityProof') {
+      cb(null, 'uploads/documents');
+    } else {
+      cb(null, 'uploads/profile');
+    }
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -21,14 +27,14 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png/;
+    const filetypes = /jpeg|jpg|png|pdf/;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     
     if (mimetype && extname) {
       return cb(null, true);
     }
-    cb(new Error('Only .jpeg, .jpg and .png files are allowed'));
+    cb(new Error('Only .jpeg, .jpg, .png and .pdf files are allowed'));
   }
 });
 
@@ -201,15 +207,158 @@ router.post('/upload/license', auth, upload.single('drivingLicense'), async (req
       return res.status(404).json({ message: 'User not found' });
     }
     
-    user.drivingLicense = `/uploads/profile/${req.file.filename}`;
+    const filePath = `/uploads/documents/${req.file.filename}`;
+    
+    if (!user.documents) {
+      user.documents = {};
+    }
+    
+    user.documents.drivingLicense = {
+      file: filePath,
+      verified: false
+    };
+    
     await user.save();
     
     res.json({
       message: 'Driving license uploaded successfully',
-      drivingLicense: user.drivingLicense
+      drivingLicense: filePath
     });
   } catch (error) {
     console.error('License upload error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Upload identity proof
+router.post('/upload/identity', auth, upload.single('identityProof'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    const filePath = `/uploads/documents/${req.file.filename}`;
+    
+    if (!user.documents) {
+      user.documents = {};
+    }
+    
+    user.documents.identityProof = {
+      file: filePath,
+      verified: false
+    };
+    
+    await user.save();
+    
+    res.json({
+      message: 'Identity proof uploaded successfully',
+      identityProof: filePath
+    });
+  } catch (error) {
+    console.error('Identity proof upload error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Verify document with Digilocker
+router.post('/verify/document', auth, digilockerVerify, async (req, res) => {
+  try {
+    // Get verification result from middleware
+    const { success, data, error } = req.digilockerVerification;
+    
+    if (!success) {
+      return res.status(400).json({ 
+        message: 'Document verification failed', 
+        error
+      });
+    }
+    
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Update user document verification status based on document type
+    const { documentType } = req.body;
+    
+    if (!user.documents) {
+      user.documents = {};
+    }
+    
+    if (documentType === 'drivingLicense' && user.documents.drivingLicense) {
+      user.documents.drivingLicense.verified = true;
+      user.documents.drivingLicense.verificationDate = new Date();
+    } else if (documentType === 'identityProof' && user.documents.identityProof) {
+      user.documents.identityProof.verified = true;
+      user.documents.identityProof.verificationDate = new Date();
+    }
+    
+    // If both documents are verified, mark user as digilocker verified
+    if (user.documents.drivingLicense?.verified && user.documents.identityProof?.verified) {
+      user.digilockerVerified = true;
+    }
+    
+    await user.save();
+    
+    res.json({
+      message: 'Document verified successfully',
+      verificationData: data
+    });
+  } catch (error) {
+    console.error('Document verification error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Initialize Digilocker auth flow
+router.get('/digilocker/auth', auth, (req, res) => {
+  // In a real implementation, this would redirect to Digilocker OAuth flow
+  // For demonstration purposes, we'll return a simulated auth URL
+  const authUrl = `${process.env.DIGILOCKER_AUTH_URL || 'https://api.digitallocker.gov.in/oauth2/authorize'}?client_id=${process.env.DIGILOCKER_CLIENT_ID}&redirect_uri=${process.env.DIGILOCKER_REDIRECT_URI}&response_type=code&state=${req.user.userId}`;
+  
+  res.json({
+    authUrl,
+    message: 'Please navigate to this URL to authenticate with DigiLocker'
+  });
+});
+
+// Digilocker OAuth callback
+router.get('/digilocker/callback', async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    
+    if (!code || !state) {
+      return res.status(400).json({ message: 'Invalid callback parameters' });
+    }
+    
+    // In a real implementation:
+    // 1. Exchange the code for a token
+    // 2. Use the token to fetch user's verified documents
+    // 3. Update the user's document verification status
+    
+    // For demonstration purposes, we'll simulate a successful verification
+    const userId = state;
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    user.digilockerVerified = true;
+    await user.save();
+    
+    // In a real implementation, redirect to the frontend with a success message
+    res.json({
+      message: 'DigiLocker verification successful',
+      userId
+    });
+  } catch (error) {
+    console.error('DigiLocker callback error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

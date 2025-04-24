@@ -1,4 +1,3 @@
-
 const express = require('express');
 const Car = require('../models/Car');
 const auth = require('../middleware/auth');
@@ -6,12 +5,15 @@ const multer = require('multer');
 const path = require('path');
 const router = express.Router();
 const checkRole = require('../middleware/checkRole');
+const digilockerVerify = require('../middleware/digilockerVerify');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (file.fieldname === 'documents') {
       cb(null, 'uploads/documents');
+    } else if (file.fieldname === 'registration' || file.fieldname === 'insurance' || file.fieldname === 'puc') {
+      cb(null, 'uploads/cardocs');
     } else {
       cb(null, 'uploads/cars');
     }
@@ -112,7 +114,9 @@ router.get('/:id', async (req, res) => {
 // Add a new car (host only)
 router.post('/', [auth, checkRole(['host', 'admin'])], upload.fields([
   { name: 'images', maxCount: 10 },
-  { name: 'documents', maxCount: 5 }
+  { name: 'registration', maxCount: 1 },
+  { name: 'insurance', maxCount: 1 },
+  { name: 'puc', maxCount: 1 }
 ]), async (req, res) => {
   try {
     const {
@@ -130,20 +134,34 @@ router.post('/', [auth, checkRole(['host', 'admin'])], upload.fields([
     
     // Process uploaded files
     let images = [];
-    let documents = [];
+    let registrationFile = null;
+    let insuranceFile = null;
+    let pucFile = null;
     
     if (req.files) {
       if (req.files.images) {
         images = req.files.images.map(file => `/uploads/cars/${file.filename}`);
       }
       
-      if (req.files.documents) {
-        documents = req.files.documents.map(file => `/uploads/documents/${file.filename}`);
+      if (req.files.registration && req.files.registration[0]) {
+        registrationFile = `/uploads/cardocs/${req.files.registration[0].filename}`;
+      }
+      
+      if (req.files.insurance && req.files.insurance[0]) {
+        insuranceFile = `/uploads/cardocs/${req.files.insurance[0].filename}`;
+      }
+      
+      if (req.files.puc && req.files.puc[0]) {
+        pucFile = `/uploads/cardocs/${req.files.puc[0].filename}`;
       }
     }
     
     if (images.length === 0) {
       return res.status(400).json({ message: 'At least one car image is required' });
+    }
+    
+    if (!registrationFile || !insuranceFile || !pucFile) {
+      return res.status(400).json({ message: 'All car documents (registration, insurance, PUC) are required' });
     }
     
     // Create new car
@@ -160,7 +178,20 @@ router.post('/', [auth, checkRole(['host', 'admin'])], upload.fields([
       availableFrom: new Date(availableFrom),
       availableTo: new Date(availableTo),
       images,
-      documents
+      documents: {
+        registrationCertificate: {
+          file: registrationFile,
+          verified: false
+        },
+        insurance: {
+          file: insuranceFile,
+          verified: false
+        },
+        pucCertificate: {
+          file: pucFile,
+          verified: false
+        }
+      }
     });
     
     await car.save();
@@ -229,6 +260,133 @@ router.delete('/:id', auth, async (req, res) => {
     res.json({ message: 'Car removed' });
   } catch (error) {
     console.error('Delete car error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Upload car document
+router.post('/:id/document/:docType', auth, upload.single('document'), async (req, res) => {
+  try {
+    const { id, docType } = req.params;
+    
+    if (!['registration', 'insurance', 'puc'].includes(docType)) {
+      return res.status(400).json({ message: 'Invalid document type' });
+    }
+    
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    
+    const car = await Car.findById(id);
+    if (!car) {
+      return res.status(404).json({ message: 'Car not found' });
+    }
+    
+    // Check if user is the car owner or an admin
+    if (car.owner.toString() !== req.user.userId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    
+    const filePath = `/uploads/cardocs/${req.file.filename}`;
+    
+    if (!car.documents) {
+      car.documents = {};
+    }
+    
+    // Update the appropriate document field
+    if (docType === 'registration') {
+      car.documents.registrationCertificate = {
+        file: filePath,
+        verified: false
+      };
+    } else if (docType === 'insurance') {
+      car.documents.insurance = {
+        file: filePath,
+        verified: false
+      };
+    } else if (docType === 'puc') {
+      car.documents.pucCertificate = {
+        file: filePath,
+        verified: false
+      };
+    }
+    
+    await car.save();
+    
+    res.json({
+      message: `${docType} document uploaded successfully`,
+      documentPath: filePath
+    });
+  } catch (error) {
+    console.error('Car document upload error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Verify car document with Digilocker
+router.post('/:id/verify/:docType', auth, digilockerVerify, async (req, res) => {
+  try {
+    const { id, docType } = req.params;
+    
+    if (!['registration', 'insurance', 'puc'].includes(docType)) {
+      return res.status(400).json({ message: 'Invalid document type' });
+    }
+    
+    // Get verification result from middleware
+    const { success, data, error } = req.digilockerVerification;
+    
+    if (!success) {
+      return res.status(400).json({ 
+        message: 'Document verification failed', 
+        error
+      });
+    }
+    
+    const car = await Car.findById(id);
+    if (!car) {
+      return res.status(404).json({ message: 'Car not found' });
+    }
+    
+    // Check if user is the car owner or an admin
+    if (car.owner.toString() !== req.user.userId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    
+    if (!car.documents) {
+      return res.status(400).json({ message: 'No documents found for this car' });
+    }
+    
+    // Update the verification status
+    if (docType === 'registration' && car.documents.registrationCertificate) {
+      car.documents.registrationCertificate.verified = true;
+      car.documents.registrationCertificate.verificationDate = new Date();
+    } else if (docType === 'insurance' && car.documents.insurance) {
+      car.documents.insurance.verified = true;
+      car.documents.insurance.verificationDate = new Date();
+    } else if (docType === 'puc' && car.documents.pucCertificate) {
+      car.documents.pucCertificate.verified = true;
+      car.documents.pucCertificate.verificationDate = new Date();
+    } else {
+      return res.status(400).json({ message: `${docType} document not found` });
+    }
+    
+    // If all documents are verified, mark car as verified
+    if (
+      car.documents.registrationCertificate?.verified &&
+      car.documents.insurance?.verified &&
+      car.documents.pucCertificate?.verified
+    ) {
+      car.isVerified = true;
+    }
+    
+    await car.save();
+    
+    res.json({
+      message: `${docType} document verified successfully`,
+      verificationData: data
+    });
+  } catch (error) {
+    console.error('Car document verification error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
