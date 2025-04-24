@@ -28,6 +28,12 @@ const CarSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  // Adding currency for internationalization
+  currency: {
+    type: String,
+    default: '₹',
+    enum: ['₹', '$', '€', '£']
+  },
   location: {
     type: String,
     required: true
