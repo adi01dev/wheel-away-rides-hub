@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const carRoutes = require('./routes/cars');
 const bookingRoutes = require('./routes/bookings');
 const rideShareRoutes = require('./routes/rideShare');
+const adminRoutes = require('./routes/admin');
 const path = require('path');
 const fs = require('fs');
 
@@ -49,6 +50,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/rideshares', rideShareRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 handler
 app.use((req, res) => {

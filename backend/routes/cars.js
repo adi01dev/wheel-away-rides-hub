@@ -1,3 +1,4 @@
+
 const express = require('express');
 const Car = require('../models/Car');
 const auth = require('../middleware/auth');
@@ -90,6 +91,20 @@ router.get('/', async (req, res) => {
     res.json(cars);
   } catch (error) {
     console.error('Get cars error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get all cars for admin
+router.get('/admin', [auth, checkRole(['admin'])], async (req, res) => {
+  try {
+    const cars = await Car.find()
+      .populate('owner', 'name email profileImage')
+      .sort({ createdAt: -1 });
+    
+    res.json(cars);
+  } catch (error) {
+    console.error('Admin get cars error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -241,7 +256,41 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
-// Delete a car
+// Verify a car (admin only)
+router.patch('/:id/verify', [auth, checkRole(['admin'])], async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id);
+    
+    if (!car) {
+      return res.status(404).json({ message: 'Car not found' });
+    }
+    
+    car.isVerified = true;
+    if (car.documents) {
+      if (car.documents.registrationCertificate) {
+        car.documents.registrationCertificate.verified = true;
+        car.documents.registrationCertificate.verificationDate = new Date();
+      }
+      if (car.documents.insurance) {
+        car.documents.insurance.verified = true;
+        car.documents.insurance.verificationDate = new Date();
+      }
+      if (car.documents.pucCertificate) {
+        car.documents.pucCertificate.verified = true;
+        car.documents.pucCertificate.verificationDate = new Date();
+      }
+    }
+    
+    await car.save();
+    
+    res.json({ message: 'Car verified successfully', car });
+  } catch (error) {
+    console.error('Verify car error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete a car (owner or admin)
 router.delete('/:id', auth, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -255,7 +304,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
     
-    await car.remove();
+    await Car.findByIdAndDelete(req.params.id);
     
     res.json({ message: 'Car removed' });
   } catch (error) {

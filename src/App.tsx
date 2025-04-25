@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ import BookingConfirmation from "./pages/BookingConfirmation";
 import RideSharing from "./pages/RideSharing";
 import NotFound from "./pages/NotFound";
 import UserDashboard from "./pages/UserDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import AboutUs from "./pages/AboutUs";
 import Press from "./pages/Press";
 import Blog from "./pages/Blog";
@@ -45,6 +47,7 @@ const App = () => (
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
             <Route path="/ride-sharing" element={<RideSharing />} />
             <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/press" element={<Press />} />
             <Route path="/blog" element={<Blog />} />

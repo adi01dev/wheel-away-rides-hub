@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Car } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -56,16 +57,25 @@ const Header = () => {
           <Link to="/become-host" className="text-sm font-medium hover:text-wheelteal-600 transition-colors">
             Become a Host
           </Link>
+          {isLoggedIn && userRole === 'admin' && (
+            <Link to="/admin" className="text-sm font-medium hover:text-wheelteal-600 transition-colors">
+              Admin
+            </Link>
+          )}
         </nav>
 
         {/* Authentication buttons */}
         <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <>
-              <Link to={userRole === 'host' ? "/host-dashboard" : "/dashboard"}>
+              <Link to={userRole === 'host' ? "/host-dashboard" : userRole === 'admin' ? "/admin" : "/dashboard"}>
                 <Button variant="outline" size="sm" className="hidden md:flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  <span>{userRole === 'host' ? 'Host Dashboard' : 'Dashboard'}</span>
+                  <span>
+                    {userRole === 'host' ? 'Host Dashboard' : 
+                     userRole === 'admin' ? 'Admin Panel' : 
+                     'Dashboard'}
+                  </span>
                 </Button>
               </Link>
               <Button 

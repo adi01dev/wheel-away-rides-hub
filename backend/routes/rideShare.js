@@ -1,7 +1,9 @@
+
 const express = require('express');
 const RideShare = require('../models/RideShare');
 const Car = require('../models/Car');
 const auth = require('../middleware/auth');
+const checkRole = require('../middleware/checkRole');
 const sendEmail = require('../utils/sendEmail');
 const router = express.Router();
 
@@ -43,6 +45,22 @@ router.get('/', async (req, res) => {
     res.json(rideShares);
   } catch (error) {
     console.error('Get ride shares error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get all ride shares (for admin)
+router.get('/admin', [auth, checkRole(['admin'])], async (req, res) => {
+  try {
+    const rideShares = await RideShare.find()
+      .populate('driver', 'name profileImage')
+      .populate('car', 'make model year category')
+      .populate('passengers.user', 'name profileImage')
+      .sort({ createdAt: -1 });
+    
+    res.json(rideShares);
+  } catch (error) {
+    console.error('Get admin ride shares error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -203,7 +221,32 @@ router.patch('/:id/passengers/:passengerId', auth, async (req, res) => {
   }
 });
 
-// Cancel a ride share (driver only)
+// Cancel a ride share (driver or admin)
+router.patch('/:id/cancel', auth, async (req, res) => {
+  try {
+    const rideShare = await RideShare.findById(req.params.id);
+    
+    if (!rideShare) {
+      return res.status(404).json({ message: 'Ride share not found' });
+    }
+    
+    // Check if user is the driver or admin
+    if (rideShare.driver.toString() !== req.user.userId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    
+    // Set status to cancelled
+    rideShare.status = 'cancelled';
+    await rideShare.save();
+    
+    res.json({ message: 'Ride share cancelled' });
+  } catch (error) {
+    console.error('Cancel ride share error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete a ride share (driver or admin)
 router.delete('/:id', auth, async (req, res) => {
   try {
     const rideShare = await RideShare.findById(req.params.id);
@@ -212,18 +255,17 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(404).json({ message: 'Ride share not found' });
     }
     
-    // Check if user is the driver
-    if (rideShare.driver.toString() !== req.user.userId) {
+    // Check if user is the driver or admin
+    if (rideShare.driver.toString() !== req.user.userId && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Not authorized' });
     }
     
     // Instead of removing, set status to cancelled
-    rideShare.status = 'cancelled';
-    await rideShare.save();
+    await RideShare.findByIdAndDelete(req.params.id);
     
-    res.json({ message: 'Ride share cancelled' });
+    res.json({ message: 'Ride share deleted' });
   } catch (error) {
-    console.error('Cancel ride share error:', error);
+    console.error('Delete ride share error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
