@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,6 +25,7 @@ import FAQs from "./pages/FAQs";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Cookie from "./pages/Cookie";
+import AdminLogin from "./pages/AdminLogin";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +48,7 @@ const App = () => (
             <Route path="/ride-sharing" element={<RideSharing />} />
             <Route path="/dashboard" element={<UserDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/press" element={<Press />} />
             <Route path="/blog" element={<Blog />} />
