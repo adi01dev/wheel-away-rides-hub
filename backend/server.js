@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -8,6 +7,7 @@ const carRoutes = require('./routes/cars');
 const bookingRoutes = require('./routes/bookings');
 const rideShareRoutes = require('./routes/rideShare');
 const adminRoutes = require('./routes/admin');
+const paymentRoutes = require('./routes/payments');
 const path = require('path');
 const fs = require('fs');
 
@@ -51,6 +51,7 @@ app.use('/api/cars', carRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/rideshares', rideShareRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // 404 handler
 app.use((req, res) => {
