@@ -1,4 +1,3 @@
-
 const express = require('express');
 const RideShare = require('../models/RideShare');
 const Car = require('../models/Car');
@@ -11,7 +10,10 @@ router.get('/', async (req, res) => {
   try {
     const { source, destination, date } = req.query;
     
-    let query = { status: 'scheduled' };
+    let query = { 
+      status: 'scheduled',
+      visibleUntil: { $gt: new Date() } // Only show rides that are still visible
+    };
     
     if (source) {
       query.source = { $regex: source, $options: 'i' };

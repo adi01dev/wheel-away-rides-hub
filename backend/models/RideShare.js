@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const RideShareSchema = new mongoose.Schema({
@@ -31,7 +30,13 @@ const RideShareSchema = new mongoose.Schema({
   },
   departureTime: {
     type: Date,
-    required: true
+    required: true,
+    validate: {
+      validator: function(v) {
+        return new Date(v) > new Date(Date.now() + 2 * 60 * 60 * 1000);
+      },
+      message: 'Departure time must be at least 2 hours from now'
+    }
   },
   availableSeats: {
     type: Number,
@@ -54,7 +59,17 @@ const RideShareSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  visibleUntil: {
+    type: Date,
+    default: function() {
+      return new Date(this.departureTime.getTime() - 2 * 60 * 60 * 1000);
+    }
   }
 });
+
+RideShareSchema.methods.isVisible = function() {
+  return new Date() < this.visibleUntil;
+};
 
 module.exports = mongoose.model('RideShare', RideShareSchema);
