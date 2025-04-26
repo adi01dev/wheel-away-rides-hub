@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Car, User, Users } from "lucide-react";
+import { Google } from "lucide-react";
 
 interface AuthFormProps {
   defaultTab?: 'signin' | 'signup';
@@ -51,6 +50,14 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
     }
   };
   
+  const handleGoogleSignIn = () => {
+    // Implement Google Sign In logic here
+    toast({
+      title: "Google Sign In",
+      description: "Signing in with Google...",
+    });
+  };
+  
   return (
     <div className="max-w-md w-full mx-auto">
       <Card className="border-0 shadow-lg">
@@ -66,7 +73,6 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                 className={`flex items-center gap-2 ${userType === 'renter' ? 'bg-wheelteal-600 hover:bg-wheelteal-700' : ''}`}
                 onClick={() => setUserType('renter')}
               >
-                <User className="h-4 w-4" />
                 <span>I'm a Renter</span>
               </Button>
               <Button
@@ -75,7 +81,6 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                 className={`flex items-center gap-2 ${userType === 'host' ? 'bg-wheelteal-600 hover:bg-wheelteal-700' : ''}`}
                 onClick={() => setUserType('host')}
               >
-                <Car className="h-4 w-4" />
                 <span>I'm a Host</span>
               </Button>
             </div>
@@ -115,21 +120,15 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                     <span className="bg-background px-2 text-muted-foreground">or continue with</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4 mt-6">
-                  <Button variant="outline" type="button" className="flex items-center gap-2">
-                    <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                      <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                      <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                      <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                      <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-                    </svg>
-                    <span>Google</span>
-                  </Button>
-                  <Button variant="outline" type="button" className="flex items-center gap-2">
-                    <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M22 12c0-5.523-4.477-10-10-10s-10 4.477-10 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54v-2.891h2.54v-2.203c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562v1.875h2.773l-.443 2.891h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill="currentColor"/>
-                    </svg>
-                    <span>Facebook</span>
+                <div className="mt-6">
+                  <Button 
+                    variant="outline" 
+                    type="button" 
+                    className="w-full flex items-center justify-center gap-2"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <Google className="h-4 w-4" />
+                    <span>Sign in with Google</span>
                   </Button>
                 </div>
               </div>
@@ -164,17 +163,25 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                 </Button>
               </form>
               <div className="mt-6">
-                <p className="text-center text-sm text-muted-foreground">
-                  By creating an account, you agree to our{' '}
-                  <a href="/terms" className="underline underline-offset-4 hover:text-wheelteal-600">
-                    Terms of Service
-                  </a>{' '}
-                  and{' '}
-                  <a href="/privacy" className="underline underline-offset-4 hover:text-wheelteal-600">
-                    Privacy Policy
-                  </a>
-                  .
-                </p>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">or continue with</span>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <Button 
+                    variant="outline" 
+                    type="button" 
+                    className="w-full flex items-center justify-center gap-2"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <Google className="h-4 w-4" />
+                    <span>Sign up with Google</span>
+                  </Button>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
