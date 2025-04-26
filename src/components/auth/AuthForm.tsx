@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { LucideIcon as GoogleIcon } from "lucide-react";
+import { LogIn } from "lucide-react";
 
 interface AuthFormProps {
   defaultTab?: 'signin' | 'signup';
@@ -57,6 +57,21 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
       title: "Google Sign In",
       description: "Signing in with Google...",
     });
+    
+    // For demo, simulate successful sign-in
+    localStorage.setItem('token', 'demo-token');
+    localStorage.setItem('user', JSON.stringify({ 
+      role: userType,
+      name: 'Demo User',
+      email: 'demo@example.com'
+    }));
+    
+    // Redirect based on user type
+    if (userType === 'host') {
+      navigate('/host-dashboard');
+    } else {
+      navigate('/dashboard');
+    }
   };
   
   return (
@@ -128,7 +143,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                     className="w-full flex items-center justify-center gap-2"
                     onClick={handleGoogleSignIn}
                   >
-                    <google className="h-4 w-4" />
+                    <LogIn className="h-4 w-4" />
                     <span>Sign in with Google</span>
                   </Button>
                 </div>
@@ -179,7 +194,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                     className="w-full flex items-center justify-center gap-2"
                     onClick={handleGoogleSignIn}
                   >
-                    <google className="h-4 w-4" />
+                    <LogIn className="h-4 w-4" />
                     <span>Sign up with Google</span>
                   </Button>
                 </div>

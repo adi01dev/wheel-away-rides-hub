@@ -1,15 +1,15 @@
 
-import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UserProfile from "@/components/dashboard/UserProfile";
 import UserBookings from "@/components/dashboard/UserBookings";
 import DocumentVerification from "@/components/dashboard/DocumentVerification";
+import UserDashboardHeader from "@/components/dashboard/UserDashboardHeader";
 
 const UserDashboard = () => {
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">My Dashboard</h1>
+      <UserDashboardHeader />
       
       <Tabs defaultValue="profile" className="w-full">
         <TabsList>
