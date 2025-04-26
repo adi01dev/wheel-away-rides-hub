@@ -5,11 +5,13 @@ import AddCarForm from "@/components/host/AddCarForm";
 import HostDocumentVerification from "@/components/host/HostDocumentVerification";
 import HostDashboardHeader from "@/components/host/HostDashboardHeader";
 import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const HostDashboard = () => {
   const [cars, setCars] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Fetch host data
@@ -36,6 +38,44 @@ const HostDashboard = () => {
     
     fetchHostData();
   }, []);
+
+  // Handler for AddCarForm's onSuccess prop
+  const handleCarAdded = () => {
+    // In a real app, we would refetch data from the backend
+    toast({
+      title: "Car added successfully",
+      description: "Your car has been added to the platform.",
+    });
+    
+    // For demo: add a dummy new car to the list
+    setCars(prevCars => [
+      ...prevCars,
+      { id: Date.now(), make: 'New Car', model: 'Model', status: 'available' }
+    ]);
+  };
+
+  // Handlers for HostDocumentVerification props
+  const handleDocumentUpload = async (documentType: string, file: File) => {
+    // In a real app, this would upload the file to a server
+    return new Promise<void>((resolve, reject) => {
+      // Simulate API call delay
+      setTimeout(() => {
+        console.log(`Uploading ${documentType} document:`, file.name);
+        resolve();
+      }, 1000);
+    });
+  };
+
+  const handleDocumentVerify = async (documentType: string) => {
+    // In a real app, this would initiate verification with DigiLocker or similar service
+    return new Promise<void>((resolve, reject) => {
+      // Simulate API call delay
+      setTimeout(() => {
+        console.log(`Verifying ${documentType} document`);
+        resolve();
+      }, 1000);
+    });
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -106,7 +146,7 @@ const HostDashboard = () => {
               <CardTitle>Add a New Car</CardTitle>
             </CardHeader>
             <CardContent>
-              <AddCarForm />
+              <AddCarForm onSuccess={handleCarAdded} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -117,7 +157,10 @@ const HostDashboard = () => {
               <CardTitle>Document Verification</CardTitle>
             </CardHeader>
             <CardContent>
-              <HostDocumentVerification />
+              <HostDocumentVerification 
+                onUpload={handleDocumentUpload}
+                onVerify={handleDocumentVerify}
+              />
             </CardContent>
           </Card>
         </TabsContent>
