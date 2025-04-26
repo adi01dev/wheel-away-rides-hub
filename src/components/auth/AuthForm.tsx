@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Google } from "lucide-react";
+import { google } from "lucide-react";
 
 interface AuthFormProps {
   defaultTab?: 'signin' | 'signup';
@@ -127,7 +127,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                     className="w-full flex items-center justify-center gap-2"
                     onClick={handleGoogleSignIn}
                   >
-                    <Google className="h-4 w-4" />
+                    <google className="h-4 w-4" />
                     <span>Sign in with Google</span>
                   </Button>
                 </div>
@@ -178,7 +178,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                     className="w-full flex items-center justify-center gap-2"
                     onClick={handleGoogleSignIn}
                   >
-                    <Google className="h-4 w-4" />
+                    <google className="h-4 w-4" />
                     <span>Sign up with Google</span>
                   </Button>
                 </div>
