@@ -85,8 +85,8 @@ const CarDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date(Date.now() + 24 * 60 * 60 * 1000));
   const [activeImage, setActiveImage] = useState(0);
   const [showBookingDialog, setShowBookingDialog] = useState(false);
   
@@ -350,22 +350,24 @@ const CarDetail = () => {
         </div>
       </div>
       
-      <BookingConfirmationDialog
-        isOpen={showBookingDialog}
-        onClose={() => setShowBookingDialog(false)}
-        bookingDetails={{
-          id: "temp_" + Date.now(),
-          type: 'self-drive',
-          startDate: startDate!,
-          endDate: endDate!,
-          amount: calculateTotal() + Math.round(calculateTotal() * 0.1),
-          car: {
-            make: carData.specifications.make,
-            model: carData.specifications.model
-          }
-        }}
-        onConfirm={handlePaymentSuccess}
-      />
+      {showBookingDialog && startDate && endDate && (
+        <BookingConfirmationDialog
+          isOpen={showBookingDialog}
+          onClose={() => setShowBookingDialog(false)}
+          bookingDetails={{
+            id: "temp_" + Date.now(),
+            type: 'self-drive',
+            startDate: startDate,
+            endDate: endDate,
+            amount: calculateTotal() + Math.round(calculateTotal() * 0.1),
+            car: {
+              make: carData.specifications.make,
+              model: carData.specifications.model
+            }
+          }}
+          onConfirm={handlePaymentSuccess}
+        />
+      )}
     </>
   );
 };

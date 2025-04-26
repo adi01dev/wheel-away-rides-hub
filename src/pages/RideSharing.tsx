@@ -114,7 +114,7 @@ const RideSharing = () => {
   const [activeTab, setActiveTab] = useState("find");
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState("");
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [time, setTime] = useState("");
   const [passengers, setPassengers] = useState("1");
   const [filteredRides, setFilteredRides] = useState(availableRides);
@@ -519,11 +519,14 @@ const RideSharing = () => {
             type: 'ride-share',
             source: selectedRide.source,
             destination: selectedRide.destination,
-            startDate: selectedRide.date,
+            startDate: selectedRide.date || new Date(),
             amount: selectedRide.price,
-            car: {
-              make: selectedRide.car.split(' ')[0],
-              model: selectedRide.car.split(' ').slice(1).join(' ')
+            car: selectedRide.car ? {
+              make: selectedRide.car.split(' ')[0] || 'Unknown',
+              model: selectedRide.car.split(' ').slice(1).join(' ') || 'Model'
+            } : {
+              make: 'Unknown',
+              model: 'Vehicle'
             }
           }}
           onConfirm={handlePaymentSuccess}
