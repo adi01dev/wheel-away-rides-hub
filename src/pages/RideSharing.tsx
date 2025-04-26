@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -109,6 +110,7 @@ const timeSlots = [
 ];
 
 const RideSharing = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("find");
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState("");
@@ -158,6 +160,16 @@ const RideSharing = () => {
   const handlePaymentSuccess = () => {
     setShowBookingDialog(false);
     navigate("/booking-confirmation");
+  };
+
+  const handleAcceptRequest = (requestId: number) => {
+    const request = rideRequests.find((req) => req.id === requestId);
+    if (!request) {
+      toast.error("Request not found");
+      return;
+    }
+    
+    toast.success(`You've accepted the ride request from ${request.rider}`);
   };
 
   return (
