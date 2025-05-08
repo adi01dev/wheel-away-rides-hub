@@ -2,13 +2,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 
-// Mock data for featured cars
 const featuredCars = [
   {
     id: 1,
     name: "Tesla Model 3",
     image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=1471&auto=format&fit=crop",
-    price: 89,
+    price: 8900,
     location: "San Francisco",
     category: "Electric",
     rating: 4.9
@@ -17,7 +16,7 @@ const featuredCars = [
     id: 2,
     name: "BMW 3 Series",
     image: "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?q=80&w=1470&auto=format&fit=crop",
-    price: 105,
+    price: 6050,
     location: "Los Angeles",
     category: "Luxury",
     rating: 4.7
@@ -26,7 +25,7 @@ const featuredCars = [
     id: 3,
     name: "Jeep Wrangler",
     image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1470&auto=format&fit=crop",
-    price: 95,
+    price: 9050,
     location: "Denver",
     category: "SUV",
     rating: 4.8
@@ -34,8 +33,8 @@ const featuredCars = [
   {
     id: 4,
     name: "Ford Mustang",
-    image: "https://images.unsplash.com/photo-1584345604476-8ec5f452d1f8?q=80&w=1470&auto=format&fit=crop",
-    price: 120,
+    image: "https://carsales.pxcrush.net/carsales/cars/dealer/1l9xc9074ly8axj8mi75wkevx.jpg?pxc_method=fitfill&pxc_bgtype=self&pxc_size=720,480",
+    price: 8700,
     location: "Miami",
     category: "Sports",
     rating: 4.9

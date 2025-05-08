@@ -55,7 +55,6 @@ const CarDocumentVerification = ({
       });
     } finally {
       setIsUploading(null);
-      // Clear the input value to allow re-uploading the same file
       e.target.value = "";
     }
   };

@@ -6,7 +6,6 @@ import { Download } from "lucide-react";
 
 const UserBookings = () => {
   const downloadReceipt = (bookingId: string) => {
-    // Here you would normally generate and download the receipt
     console.log("Downloading receipt for booking:", bookingId);
   };
 

@@ -18,7 +18,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is admin
     const user = localStorage.getItem('user');
     if (!user || JSON.parse(user).role !== 'admin') {
       // Redirect to home if not admin

@@ -5,21 +5,21 @@ const testimonials = [
   {
     id: 1,
     quote: "WheelAway made it super easy to find the perfect car for our family vacation. The entire process was smooth, from booking to pick-up and drop-off. Will definitely use again!",
-    author: "Jessica Thompson",
+    author: "Saanvi",
     role: "Traveler",
     avatar: "https://i.pravatar.cc/150?img=32"
   },
   {
     id: 2,
     quote: "As a host, I've had nothing but positive experiences. The platform is intuitive, and the support team is always there when I need them. I've made great extra income sharing my car.",
-    author: "Marcus Chen",
+    author: "Aarav",
     role: "Car Host",
     avatar: "https://i.pravatar.cc/150?img=12"
   },
   {
     id: 3,
     quote: "I was skeptical at first, but WheelAway exceeded my expectations. The car I rented was in perfect condition and exactly as described. The owner was friendly and accommodating.",
-    author: "Sarah Johnson",
+    author: "Anaya",
     role: "Traveler",
     avatar: "https://i.pravatar.cc/150?img=26"
   }
