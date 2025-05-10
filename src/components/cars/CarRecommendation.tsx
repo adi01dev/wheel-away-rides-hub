@@ -55,7 +55,7 @@ const getCarRecommendation = (selections: Record<string, string>) => {
   }
   
   if (rentalDays === "8-14" || rentalDays === "15+") {
-    if (category === "SUV") category = "Midsize"; 
+    if (category === "SUV") category = "SUV"; 
   }
   
   return {
