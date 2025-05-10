@@ -9,7 +9,7 @@ const HostDashboardHeader = () => {
   const { toast } = useToast();
 
   const handleLogout = () => {
-    // Remove auth data from localStorage
+    
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     

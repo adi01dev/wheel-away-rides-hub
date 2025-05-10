@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Car, Users, Navigation, Calendar } from "lucide-react";
 import { toast } from "sonner";
 
-// Define the car recommendation questions and options
 const questions = [
   {
     id: "rental-days",
@@ -41,31 +40,24 @@ const questions = [
   }
 ];
 
-// Mock recommendation algorithm based on user selections
 const getCarRecommendation = (selections: Record<string, string>) => {
-  // This is a simplified recommendation algorithm
-  // In a real app, this would be much more sophisticated and would consider many more factors
   
   const { "rental-days": rentalDays, passengers, "travel-distance": distance } = selections;
   
-  // Car categories based on passengers
   let category = "Economy";
   if (passengers === "3-4") category = "Compact";
   else if (passengers === "5-7") category = "SUV";
   else if (passengers === "8+") category = "Van";
   
-  // Adjust based on distance
   if (distance === "long" || distance === "very-long") {
     if (category === "Economy") category = "Compact";
     else if (category === "Compact") category = "Midsize";
   }
   
-  // Adjust based on rental duration
   if (rentalDays === "8-14" || rentalDays === "15+") {
-    if (category === "SUV") category = "Midsize";  // For better fuel economy on longer rentals
+    if (category === "SUV") category = "Midsize"; 
   }
   
-  // Return recommendation with explanation
   return {
     category,
     explanation: [
@@ -107,7 +99,6 @@ const CarRecommendation = ({ onRecommendationComplete }: CarRecommendationProps)
     if (step < questions.length - 1) {
       setStep(step + 1);
     } else {
-      // Generate recommendation based on selections
       const result = getCarRecommendation(selections);
       setRecommendation(result);
     }

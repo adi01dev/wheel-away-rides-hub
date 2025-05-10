@@ -11,7 +11,7 @@ const BecomeHost = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Earn Money by Sharing Your Car</h2>
             <p className="text-lg mb-6 text-white/90">
               Turn your car into a second income by sharing it with travelers in your area. 
-              On average, car owners earn over $700 per month on WheelAway.
+              On average, car owners earn over ₹7000 per month on WheelAway.
             </p>
             <ul className="space-y-3 mb-8">
               <li className="flex items-center">
@@ -24,7 +24,7 @@ const BecomeHost = () => {
                 <svg className="h-5 w-5 mr-2 text-wheelteal-200" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-                <span>$1M insurance coverage on every trip</span>
+                <span>₹10 Lakh insurance coverage on every trip</span>
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-wheelteal-200" viewBox="0 0 20 20" fill="currentColor">
@@ -34,7 +34,7 @@ const BecomeHost = () => {
               </li>
             </ul>
             <Link to="/become-host">
-              <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-wheelteal-700">
+              <Button size="lg" variant="outline" className="text-wheeldark-900 border-white hover:bg-white hover:text-wheelteal-700">
                 Become a Host
               </Button>
             </Link>
@@ -42,7 +42,7 @@ const BecomeHost = () => {
           <div className="relative">
             <div className="relative h-[400px] rounded-lg overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1609519479841-5fd3b2022488?q=80&w=1374&auto=format&fit=crop" 
+                src="https://plus.unsplash.com/premium_photo-1661293823592-280f900a7f35?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                 alt="Car host" 
                 className="w-full h-full object-cover"
               />
@@ -66,9 +66,9 @@ const BecomeHost = () => {
                 </svg>
               </div>
               <p className="text-gray-800 text-sm font-medium">
-                "I earn an extra $850 per month sharing my Tesla on weekends only!"
+                "I earn an extra ₹8500 per month sharing my Tesla on weekends only!"
               </p>
-              <p className="text-gray-500 text-xs mt-2">— Michael S., Los Angeles</p>
+              <p className="text-gray-500 text-xs mt-2">— Vivaan. , Mumbai</p>
             </div>
           </div>
         </div>

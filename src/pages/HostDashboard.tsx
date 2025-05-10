@@ -14,11 +14,8 @@ const HostDashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Fetch host data
     const fetchHostData = async () => {
       try {
-        // In a real app, we would fetch data from the backend
-        // For demo purposes, we're setting mock data
         setCars([
           { id: 1, make: 'Toyota', model: 'Corolla', status: 'available' },
           { id: 2, make: 'Honda', model: 'Civic', status: 'booked' }

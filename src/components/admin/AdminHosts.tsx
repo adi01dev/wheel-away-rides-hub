@@ -114,8 +114,6 @@ const AdminHosts = () => {
   };
 
   const handleViewDocuments = (host: HostData) => {
-    // Open modal to view documents
-    // This would typically open a modal with document images
     toast({
       title: "View Documents",
       description: "Document viewer would open here",

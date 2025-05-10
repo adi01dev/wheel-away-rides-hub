@@ -11,7 +11,7 @@ const Header = () => {
   const isHomePage = location.pathname === '/';
 
   useEffect(() => {
-    // Check if user is logged in from localStorage
+    
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     

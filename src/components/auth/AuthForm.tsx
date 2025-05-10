@@ -21,13 +21,11 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
   
   const handleSignIn = (event: React.FormEvent) => {
     event.preventDefault();
-    // This would normally validate and send authentication request
     toast({
       title: "Success!",
       description: "You have successfully signed in.",
     });
-    
-    // Redirect based on user type
+  
     if (userType === 'host') {
       navigate('/host-dashboard');
     } else {
@@ -37,13 +35,11 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
   
   const handleSignUp = (event: React.FormEvent) => {
     event.preventDefault();
-    // This would normally validate and create a new user
     toast({
       title: "Account created!",
       description: "Welcome to WheelAway! Your account has been created successfully.",
     });
     
-    // Redirect based on user type
     if (userType === 'host') {
       navigate('/host-dashboard');
     } else {
@@ -52,13 +48,11 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
   };
   
   const handleGoogleSignIn = () => {
-    // Implement Google Sign In logic here
     toast({
       title: "Google Sign In",
       description: "Signing in with Google...",
     });
     
-    // For demo, simulate successful sign-in
     localStorage.setItem('token', 'demo-token');
     localStorage.setItem('user', JSON.stringify({ 
       role: userType,
@@ -66,7 +60,6 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
       email: 'demo@example.com'
     }));
     
-    // Redirect based on user type
     if (userType === 'host') {
       navigate('/host-dashboard');
     } else {

@@ -15,7 +15,6 @@ const UserProfile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would normally update the user profile in the backend
     toast({
       title: "Profile Updated",
       description: "Your profile has been successfully updated.",

@@ -20,7 +20,7 @@ const carsData = [
     id: 1,
     name: "Tesla Model 3",
     image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=1471&auto=format&fit=crop",
-    price: 89,
+    price: 8090,
     location: "San Francisco",
     category: "Electric",
     rating: 4.9,
@@ -32,7 +32,7 @@ const carsData = [
     id: 2,
     name: "BMW 3 Series",
     image: "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?q=80&w=1470&auto=format&fit=crop",
-    price: 105,
+    price: 8005,
     location: "Los Angeles",
     category: "Midsize",
     rating: 4.7,
@@ -44,7 +44,7 @@ const carsData = [
     id: 3,
     name: "Jeep Wrangler",
     image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1470&auto=format&fit=crop",
-    price: 95,
+    price: 9050,
     location: "Denver",
     category: "SUV",
     rating: 4.8,
@@ -55,8 +55,8 @@ const carsData = [
   {
     id: 4,
     name: "Ford Mustang",
-    image: "https://images.unsplash.com/photo-1584345604476-8ec5f452d1f8?q=80&w=1470&auto=format&fit=crop",
-    price: 120,
+    image: "https://images.unsplash.com/photo-1547744152-14d985cb937f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    price: 10020,
     location: "Miami",
     category: "Sports",
     rating: 4.9,
@@ -68,7 +68,7 @@ const carsData = [
     id: 5,
     name: "Toyota Camry",
     image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1528&auto=format&fit=crop",
-    price: 65,
+    price: 6050,
     location: "Chicago",
     category: "Economy",
     rating: 4.6,
@@ -80,7 +80,7 @@ const carsData = [
     id: 6,
     name: "Mercedes-Benz C-Class",
     image: "https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?q=80&w=1471&auto=format&fit=crop",
-    price: 110,
+    price: 11000,
     location: "New York",
     category: "Luxury",
     rating: 4.8,
@@ -92,7 +92,7 @@ const carsData = [
     id: 7,
     name: "Honda Civic",
     image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1528&auto=format&fit=crop",
-    price: 55,
+    price: 5050,
     location: "Seattle",
     category: "Economy",
     rating: 4.5,
@@ -103,8 +103,8 @@ const carsData = [
   {
     id: 8,
     name: "Chevrolet Corvette",
-    image: "https://images.unsplash.com/photo-1584345604476-8ec5f452d1f8?q=80&w=1470&auto=format&fit=crop",
-    price: 150,
+    image: "https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Q2hldnJvbGV0JTIwQ29ydmV0dGV8ZW58MHx8MHx8fDA%3D",
+    price: 15000,
     location: "Las Vegas",
     category: "Sports",
     rating: 4.9,
@@ -120,7 +120,7 @@ const CarListing = () => {
   const [searchLocation, setSearchLocation] = useState(searchParams.get('location') || "");
   const [dateFrom, setDateFrom] = useState<Date | undefined>(searchParams.get('from') ? new Date(searchParams.get('from') || '') : undefined);
   const [dateTo, setDateTo] = useState<Date | undefined>(searchParams.get('to') ? new Date(searchParams.get('to') || '') : undefined);
-  const [priceRange, setPriceRange] = useState([0, 200]);
+  const [priceRange, setPriceRange] = useState([0, 15000]);
   const [carType, setCarType] = useState<string>("");
   const [transmission, setTransmission] = useState<string>("");
   const [isMobilFilterOpen, setMobileFilterOpen] = useState(false);
@@ -175,8 +175,8 @@ const CarListing = () => {
                     <Slider 
                       defaultValue={priceRange} 
                       min={0} 
-                      max={200} 
-                      step={5} 
+                      max={15000} 
+                      step={1000} 
                       onValueChange={setPriceRange}
                       className="my-6"
                     />
@@ -314,8 +314,8 @@ const CarListing = () => {
                     <Slider 
                       defaultValue={priceRange} 
                       min={0} 
-                      max={200} 
-                      step={5} 
+                      max={15000} 
+                      step={1000} 
                       onValueChange={setPriceRange}
                       className="my-6"
                     />
@@ -444,7 +444,7 @@ const CarListing = () => {
                 <Button
                   onClick={() => {
                     setSearchLocation("");
-                    setPriceRange([0, 200]);
+                    setPriceRange([0, 15000]);
                     setCarType("");
                     setTransmission("");
                   }}

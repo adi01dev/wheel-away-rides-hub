@@ -24,7 +24,7 @@ const categories = [
   {
     id: "sports",
     name: "Sports",
-    image: "https://images.unsplash.com/photo-1584345604476-8ec5f452d1f8?q=80&w=1470&auto=format&fit=crop",
+    image: "https://i.pinimg.com/736x/9d/b8/7e/9db87e3b023a31c722e98c04ad34e8df.jpg",
     count: 45
   },
   {
@@ -36,7 +36,7 @@ const categories = [
   {
     id: "economy",
     name: "Economy",
-    image: "https://images.unsplash.com/photo-1580483046931-628c99768ad7?q=80&w=1374&auto=format&fit=crop",
+    image: "https://media.ed.edmunds-media.com/chevrolet/cruze/2015/fe/2015_chevrolet_cruze_actf34_fe_1105141_500.jpg",
     count: 92
   }
 ];

@@ -72,7 +72,6 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
       
-      // Create URLs for preview
       const newImageUrls = selectedFiles.map(file => URL.createObjectURL(file));
       
       setImages(prev => [...prev, ...selectedFiles]);
@@ -92,7 +91,6 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const removeImage = (indexToRemove: number) => {
     setImages(images.filter((_, index) => index !== indexToRemove));
     
-    // Also remove from the preview URLs and revoke object URL to free memory
     const urlToRevoke = imageUrls[indexToRemove];
     URL.revokeObjectURL(urlToRevoke);
     setImageUrls(imageUrls.filter((_, index) => index !== indexToRemove));
@@ -101,7 +99,6 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    // Validate form data
     if (
       !carData.make ||
       !carData.model ||
@@ -126,7 +123,7 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
     try {
       setIsSubmitting(true);
       
-      // Create form data to send files
+      
       const formData = new FormData();
       formData.append('make', carData.make);
       formData.append('model', carData.model);
@@ -139,12 +136,12 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
       formData.append('availableFrom', availableFrom.toISOString());
       formData.append('availableTo', availableTo.toISOString());
       
-      // Append car images
+      
       images.forEach(image => {
         formData.append('images', image);
       });
       
-      // Append documents
+      
       if (documents.registration) {
         formData.append('registration', documents.registration);
       }
@@ -159,7 +156,7 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
       
       const token = localStorage.getItem('token');
       
-      // Send request to add car
+      
       const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/cars`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -172,7 +169,7 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
         description: "Car added successfully",
       });
       
-      // Call success callback to refresh data
+      
       onSuccess();
       
     } catch (error) {
