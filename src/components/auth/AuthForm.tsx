@@ -14,39 +14,111 @@ interface AuthFormProps {
 }
 
 const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [userType, setUserType] = useState<'renter' | 'host'>('renter');
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const handleSignIn = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSignIn = async (event: React.FormEvent) => {
+  event.preventDefault();
+
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    
+    if (!response.ok) {
+      toast({
+        title: "Login failed",
+        description: data.message || "Invalid credentials",
+      });
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+
     toast({
       title: "Success!",
       description: "You have successfully signed in.",
     });
-  
-    if (userType === 'host') {
-      navigate('/host-dashboard');
-    } else {
-      navigate('/');
-    }
-  };
-  
-  const handleSignUp = (event: React.FormEvent) => {
-    event.preventDefault();
+
+    navigate(userType === "host" ? "/host-dashboard" : "/dashboard");
+  } catch (error) {
+    console.error("Login error:", error);
     toast({
-      title: "Account created!",
-      description: "Welcome to WheelAway! Your account has been created successfully.",
+      title: "Login failed",
+      description: "An error occurred during sign in.",
     });
-    
-    if (userType === 'host') {
-      navigate('/host-dashboard');
-    } else {
-      navigate('/');
-    }
-  };
+  }
+};
   
+
+
+
+  const handleSignUp = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords don't match",
+        description: "Please ensure both passwords match",
+        variant: "destructive",
+      });
+      return;
+    }
+  const formData = {
+    
+    name ,
+    email ,
+    password ,
+    role : userType === 'host' ? 'host' : 'user' 
+  };
+
+  try {
+    const response = await fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      toast({ title: 'Signup failed', description: data.message || 'Error creating account' });
+      return;
+    }
+
+    localStorage.setItem('token', data.token);
+
+    toast({
+      title: 'Account created!',
+      description: 'Welcome to WheelAway! Your account has been created successfully.',
+    });
+
+    navigate(userType === 'host' ? '/host-dashboard' : '/dashboard');
+  } catch (err) {
+    console.error(err);
+    toast({ title: 'Signup failed', description: 'Something went wrong.' });
+  }
+};
+
+  
+
+
+
+
   const handleGoogleSignIn = () => {
     toast({
       title: "Google Sign In",
@@ -105,7 +177,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" placeholder="you@example.com" type="email" required />
+                  <Input id="email" placeholder="you@example.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -114,7 +186,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
                       Forgot password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <Button type="submit" className="w-full bg-wheelteal-600 hover:bg-wheelteal-700">
                   Sign In
@@ -146,26 +218,22 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" required />
-                  </div>
+                  
+                    <Label htmlFor="firstName">Name</Label>
+                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+                  
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" placeholder="you@example.com" type="email" required />
+                  <Input id="email" placeholder="you@example.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required />
+                  <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input id="confirmPassword" type="password" required />
+                  <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                 </div>
                 <Button type="submit" className="w-full bg-wheelteal-600 hover:bg-wheelteal-700">
                   Create Account

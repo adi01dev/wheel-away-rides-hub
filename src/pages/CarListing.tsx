@@ -116,6 +116,7 @@ const carsData = [
 
 const CarListing = () => {
   const [searchParams] = useSearchParams();
+  const [carsData, setCarsData] = useState([]);
   const [filteredCars, setFilteredCars] = useState(carsData);
   const [searchLocation, setSearchLocation] = useState(searchParams.get('location') || "");
   const [dateFrom, setDateFrom] = useState<Date | undefined>(searchParams.get('from') ? new Date(searchParams.get('from') || '') : undefined);
@@ -125,6 +126,22 @@ const CarListing = () => {
   const [transmission, setTransmission] = useState<string>("");
   const [isMobilFilterOpen, setMobileFilterOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await fetch("/api/cars"); // <-- replace with your actual endpoint
+        const data = await response.json();
+        setCarsData(data);
+        setFilteredCars(data); // initial filter
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      }
+    };
+
+    fetchCars();
+  }, []);
+
+  
   useEffect(() => {
     let filtered = [...carsData];
 

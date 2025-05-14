@@ -18,8 +18,16 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+// app.use(cors());
+// app.use(express.json());
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'http://localhost:8080',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 
 // Create upload directories if they don't exist
 const uploadDirs = [
