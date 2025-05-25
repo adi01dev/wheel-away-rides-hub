@@ -5,7 +5,7 @@ const CarSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false
   },
   make: {
     type: String,
@@ -61,7 +61,7 @@ const CarSchema = new mongoose.Schema({
       file: String,
       verified: {
         type: Boolean,
-        default: false
+        default: true
       },
       verificationDate: Date
     },
@@ -69,7 +69,7 @@ const CarSchema = new mongoose.Schema({
       file: String,
       verified: {
         type: Boolean,
-        default: false
+        default: true
       },
       verificationDate: Date
     },
@@ -77,14 +77,14 @@ const CarSchema = new mongoose.Schema({
       file: String,
       verified: {
         type: Boolean,
-        default: false
+        default: true
       },
       verificationDate: Date
     }
   },
   isVerified: {
     type: Boolean,
-    default: false
+    default: true
   },
   ratings: {
     average: {

@@ -91,7 +91,7 @@ router.get('/', async (req, res) => {
     res.json(cars);
   } catch (error) {
     console.error('Get cars error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -147,6 +147,7 @@ router.post('/', [auth, checkRole(['host', 'admin'])], upload.fields([
       availableTo
     } = req.body;
     
+    console.log(req.body);
     // Process uploaded files
     let images = [];
     let registrationFile = null;

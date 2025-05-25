@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,76 +13,80 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import BookingConfirmationDialog from "@/components/booking/BookingConfirmationDialog";
 
-const carData = {
-  id: 1,
-  name: "Tesla Model 3",
-  images: [
-    "https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=1471&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1551300361-f8151275d258?q=80&w=1470&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1562175976-76c8cc0b5b89?q=80&w=1374&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1592839898726-8ef907c4b56f?q=80&w=1471&auto=format&fit=crop",
-  ],
-  price: 89,
-  location: "San Francisco",
-  category: "Electric",
-  rating: 4.9,
-  trips: 127,
-  description: "Experience the future of driving with this sleek Tesla Model 3. This all-electric sedan combines cutting-edge technology with exceptional performance. Featuring Tesla's renowned Autopilot system, premium interior with minimalist design, and impressive range of over 300 miles per charge.",
-  features: [
-    "Autopilot",
-    "Premium Sound",
-    "Climate Control",
-    "360° Camera",
-    "Supercharger Access",
-    "Heated Seats",
-    "Glass Roof",
-    "Long Range Battery"
-  ],
-  specifications: {
-    year: "2022",
-    make: "Tesla",
-    model: "Model 3",
-    color: "Midnight Silver",
-    doors: 4,
-    seats: 5,
-    mpg: "N/A (Electric)",
-    transmission: "Automatic",
-    drivetrain: "All-Wheel Drive",
-    fuelType: "Electric"
-  },
-  host: {
-    name: "Michael S.",
-    joinedDate: "February 2020",
-    responseRate: 99,
-    responseTime: "within 1 hour",
-    avatar: "https://i.pravatar.cc/150?img=12"
-  },
-  reviews: [
-    {
-      id: 1,
-      user: "Jessica T.",
-      date: "October 2023",
-      rating: 5,
-      comment: "The car was immaculate and Michael was super responsive and helpful. Would definitely rent again!"
-    },
-    {
-      id: 2,
-      user: "David R.",
-      date: "September 2023",
-      rating: 5,
-      comment: "Amazing experience! The Tesla was in perfect condition and Michael made the pickup and drop-off process very smooth."
-    },
-    {
-      id: 3,
-      user: "Sarah M.",
-      date: "August 2023",
-      rating: 4,
-      comment: "Great car, very clean and fun to drive. Pickup location was a bit difficult to find, but otherwise excellent experience."
-    }
-  ]
-};
+// const carData = {
+//   id: 1,
+//   name: "Tesla Model 3",
+//   images: [
+//     "https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=1471&auto=format&fit=crop",
+//     "https://images.unsplash.com/photo-1551300361-f8151275d258?q=80&w=1470&auto=format&fit=crop",
+//     "https://images.unsplash.com/photo-1562175976-76c8cc0b5b89?q=80&w=1374&auto=format&fit=crop",
+//     "https://images.unsplash.com/photo-1592839898726-8ef907c4b56f?q=80&w=1471&auto=format&fit=crop",
+//   ],
+//   price: 89,
+//   location: "San Francisco",
+//   category: "Electric",
+//   rating: 4.9,
+//   trips: 127,
+//   description: "Experience the future of driving with this sleek Tesla Model 3. This all-electric sedan combines cutting-edge technology with exceptional performance. Featuring Tesla's renowned Autopilot system, premium interior with minimalist design, and impressive range of over 300 miles per charge.",
+//   features: [
+//     "Autopilot",
+//     "Premium Sound",
+//     "Climate Control",
+//     "360° Camera",
+//     "Supercharger Access",
+//     "Heated Seats",
+//     "Glass Roof",
+//     "Long Range Battery"
+//   ],
+//   specifications: {
+//     year: "2022",
+//     make: "Tesla",
+//     model: "Model 3",
+//     color: "Midnight Silver",
+//     doors: 4,
+//     seats: 5,
+//     mpg: "N/A (Electric)",
+//     transmission: "Automatic",
+//     drivetrain: "All-Wheel Drive",
+//     fuelType: "Electric"
+//   },
+//   host: {
+//     name: "Michael S.",
+//     joinedDate: "February 2020",
+//     responseRate: 99,
+//     responseTime: "within 1 hour",
+//     avatar: "https://i.pravatar.cc/150?img=12"
+//   },
+//   reviews: [
+//     {
+//       id: 1,
+//       user: "Jessica T.",
+//       date: "October 2023",
+//       rating: 5,
+//       comment: "The car was immaculate and Michael was super responsive and helpful. Would definitely rent again!"
+//     },
+//     {
+//       id: 2,
+//       user: "David R.",
+//       date: "September 2023",
+//       rating: 5,
+//       comment: "Amazing experience! The Tesla was in perfect condition and Michael made the pickup and drop-off process very smooth."
+//     },
+//     {
+//       id: 3,
+//       user: "Sarah M.",
+//       date: "August 2023",
+//       rating: 4,
+//       comment: "Great car, very clean and fun to drive. Pickup location was a bit difficult to find, but otherwise excellent experience."
+//     }
+//   ]
+// };
 
 const CarDetail = () => {
+  const [carData, setCarData] = useState<any>(null); // Or define a proper type/interface
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -89,6 +94,29 @@ const CarDetail = () => {
   const [endDate, setEndDate] = useState<Date | undefined>(new Date(Date.now() + 24 * 60 * 60 * 1000));
   const [activeImage, setActiveImage] = useState(0);
   const [showBookingDialog, setShowBookingDialog] = useState(false);
+
+  useEffect(() => {
+  const fetchCarDetails = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/cars/${id}`);
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Failed to fetch car details');
+      }
+
+      const data = await res.json();
+      setCarData(data);
+    } catch (err: any) {
+      console.error("Error fetching car details:", err);
+      setError("Could not load car details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCarDetails();
+}, [id]);
+
   
   const calculateTotal = () => {
     if (!startDate || !endDate) return 0;
@@ -113,6 +141,13 @@ const CarDetail = () => {
     setShowBookingDialog(false);
     navigate("/booking-confirmation");
   };
+  if (loading) {
+  return <div className="text-center py-20">Loading car details...</div>;
+}
+
+if (error || !carData) {
+  return <div className="text-center py-20 text-red-600">{error || "Something went wrong."}</div>;
+}
 
   return (
     <>

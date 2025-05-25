@@ -136,7 +136,16 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
       formData.append('availableFrom', availableFrom.toISOString());
       formData.append('availableTo', availableTo.toISOString());
       
-      
+      if (availableTo <= availableFrom) {
+        toast({
+        title: "Error",
+        description: "Available To date must be after Available From date",
+        variant: "destructive",
+      });
+      return;
+    }
+``
+
       images.forEach(image => {
         formData.append('images', image);
       });
@@ -155,14 +164,18 @@ const AddCarForm = ({ onSuccess }: { onSuccess: () => void }) => {
       }
       
       const token = localStorage.getItem('token');
+      if (!token) {
+        console.log(token);
+        }
       
-      
-      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/cars`, formData, {
+      console.log(...formData);        
+
+      axios.post(`${'http://localhost:5000'}/api/cars`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         }
-      });
+      }); 
       
       toast({
         title: "Success",
