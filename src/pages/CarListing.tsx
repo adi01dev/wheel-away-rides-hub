@@ -129,7 +129,7 @@ const CarListing = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await fetch("/api/cars"); // <-- replace with your actual endpoint
+        const response = await fetch("http://localhost:5000/api/cars"); // <-- replace with your actual endpoint
         const data = await response.json();
         setCarsData(data);
         setFilteredCars(data); // initial filter

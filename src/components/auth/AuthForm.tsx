@@ -30,7 +30,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
     const response = await fetch("http://localhost:5000/api/auth/login", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ email, password }),
     });
@@ -84,6 +84,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
     role : userType === 'host' ? 'host' : 'user' 
   };
 
+  
   try {
     const response = await fetch('http://localhost:5000/api/auth/register', {
       method: 'POST',
@@ -96,7 +97,7 @@ const AuthForm = ({ defaultTab = 'signin' }: AuthFormProps) => {
     const data = await response.json();
 
     if (!response.ok) {
-      toast({ title: 'Signup failed', description: data.message || 'Error creating account' });
+      toast({ title: 'Signup failed', description: data.message || data.errors?.[0]?.msg || 'Error creating account' });
       return;
     }
 
